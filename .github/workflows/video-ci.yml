@@ -128,9 +128,9 @@ jobs:
         run: |
           nohup uvicorn auth-service.app.main:app --host 0.0.0.0 --port 8001 > /tmp/auth.log 2>&1 &
           nohup uvicorn video-service.app.main:app --host 0.0.0.0 --port 8002 > /tmp/video.log 2>&1 &
-          sleep 5
-          curl -f http://localhost:8001/health
-          curl -f http://localhost:8002/health
+          sleep 10
+          curl -f http://localhost:8001/health || (echo "Auth service failed:" && cat /tmp/auth.log && exit 1)
+          curl -f http://localhost:8002/health || (echo "Video service failed:" && cat /tmp/video.log && exit 1)
       
       - name: Run video tests
         env:

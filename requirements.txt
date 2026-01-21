@@ -1,0 +1,10 @@
+# This project has been transformed into microservices
+# See individual service requirements files:
+# - auth-service/requirements.txt
+# - video-service/requirements.txt
+# - notification-service/requirements.txt
+# - shared/ dependencies (base models, config, utilities)
+
+# Development/testing dependencies
+pytest==7.4.3
+pytest-asyncio==0.21.1

@@ -1,0 +1,40 @@
+name: Cleanup Old Container Images
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    name: Delete Old Images
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    
+    strategy:
+      matrix:
+        package:
+          - video-converter-auth
+          - video-converter-video
+          - video-converter-worker
+          - video-converter-notification
+    
+    steps:
+      - name: Delete untagged images older than 30 days
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ matrix.package }}
+          package-type: container
+          min-versions-to-keep: 0
+          delete-only-untagged-versions: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Delete old tagged images (keep last 10)
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ matrix.package }}
+          package-type: container
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: false
+          token: ${{ secrets.GITHUB_TOKEN }}
